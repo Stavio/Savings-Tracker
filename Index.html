@@ -22,28 +22,26 @@
                 <div class="d-flex flex-column p-3 bg-light" style="width: 160px;">
                     <a href="/"
                         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                        <svg class="bi me-2" width="40" height="32">
-                            <use xlink:href="#bootstrap"></use>
-                        </svg>
-                        <span class="fs-4">Savings</span>
+                        <img src="/img/save-money-icon-png.png" width="120px" alt="" srcset="">
                     </a>
                     <hr>
-                    <i class="fa fa-money"> Wallet</i>
-                    <i class="fa fa-plus-square py-2"> Add Target</i>
+                    <button class="btn btn-success" id="wallet">Wallet</button>
+                    <br>
+                    <button class="btn btn-success" id="Target">Add Target</button>
                 </div>
             </div>
             <div class="col">
                 <div class="jumbotron-fluid bg-light p-4">
                     <div class="row">
                         <div class="col bg-white">
-                            <h2 style="font-size: 3em;">R6000.00</h2>
-                            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui, rerum.</p>
+                            <h2 style="font-size: 3em;" id="sumTarget">R6000.00</h2>
+                            <p><i class="fa fa-money-bill"></i>.</p>
                         </div>
 
                         <div class="col">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <h2 class="card-title">-R4700.00</h2>
+                                    <h2 class="card-title" id="cashRemain">-R4700.00</h2>
                                     <h6 class="card-subtitle mb-2 text-muted">Total remains</h6>
                                     <p class="card-text">Some quick example text to build on the card title and make up
                                         the bulk of the card's content.</p>
@@ -54,17 +52,18 @@
                         <div class="col">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <h2 class="card-title">+R2000.00</h2>
+                                    <h2 class="card-title" id="totalSaved">+R2000.00</h2>
                                     <h6 class="card-subtitle mb-2 text-muted">Total saved</h6>
                                     <p class="card-text">Some quick example text to build on the card title and make up
                                         the bulk of the card's content.</p>
-
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> <!-- side bar -->
+                <h3 class="text-center py-2">MY SAVINGS</h3>
                 <div class="row py-4">
+
                     <div class="col-sm-4">
                         <div class="card">
                             <div class="card-header">
