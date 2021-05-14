@@ -7,3 +7,12 @@
 p,h2, i, h3{
   font-family: 'Roboto', sans-serif;
 }
+
+/* Asset cost*/
+#sumOfTarget{
+  font-weight: bold;
+}
+
+.fa {
+  font-size: 43px;
+}
