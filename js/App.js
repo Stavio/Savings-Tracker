@@ -96,17 +96,13 @@ const UIController = (function () {
                 <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <h2 class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                        <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                        <h2 class="card-title">${asset.title}</h2>
+                        <p class="card-text"><i>${asset.description}</i></p>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="add funds to target"
-                                aria-label="add funds to target" aria-describedby="button-addon2">
-                            <button class="btn btn-outline-secondary" type="button"
-                                id="button-addon2">Add</button>
                         </div>
                     </div>
                     <div class="card-body">
-                        <h2 class="card-title ">${asset.title}</h2>
-                        <p class="card-text">${asset.description}</p>
                         <ul>
                             <li>R${asset.obj.price}</li>
                         </ul>
@@ -161,8 +157,6 @@ const AppController = (function (AssetController, UIController) {
             // totalSave
             const totalSaved = AssetController.getTotalSaves();
             UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
-
-
 
         }
 

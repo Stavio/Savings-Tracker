@@ -29,6 +29,11 @@
                     <br>
                     <button class="btn btn-success" id="Target" data-toggle="modal"
                         data-target="#exampleModalCenter">Add Asset</button>
+
+                    <br>
+
+                    <button class="btn btn-success" id="assetDeposit" data-toggle="modal"
+                        data-target="#depositModal">Deposit</button>
                 </div>
             </div>
             <div class="col">
@@ -109,6 +114,49 @@
                             <label for="target-date" class="col-form-label">Target date:</label>
                             <input type="date" class="form-control" id="target-date">
                         </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="addAsset">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- deposit modal-->
+
+    <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Deposit Into Asset</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="price-text" class="col-form-label">Deposit amount:</label>
+                            <input type="number" class="form-control" min="0" id="depositAmount">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price-text" class="col-form-label">Asset Type:</label>
+                            <select class="custom-select" id="inputGroupSelect01">
+                                <option selected>Choose...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="start-date" class="col-form-label">Start date:</label>
+                            <input type="date" class="form-control" id="start-date">
+                        </div>
+
                     </form>
                 </div>
                 <div class="modal-footer">
