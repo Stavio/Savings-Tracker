@@ -35,6 +35,7 @@ const AssetController = (function () {
             return data;
         },
 
+
         getTotalSaves: function () {
             let total = 0;
             data.Asset.forEach(function (asset) {
@@ -45,6 +46,7 @@ const AssetController = (function () {
             return data.totalSaves;
         },
 
+        // sum of all the assets
         getAssetSum: function () {
             let total = 0;
             data.Asset.forEach(function (asset) {
@@ -53,7 +55,17 @@ const AssetController = (function () {
 
             data.sumOfAssets = total;
             return data.sumOfAssets;
+        },
+
+        // remains 
+        displayRemains: function () {
+            const assetTotal = this.getAssetSum();
+            const saves = this.getTotalSaves();
+
+            const remains = assetTotal - saves;
+            return remains
         }
+
 
 
     }
@@ -65,7 +77,10 @@ const AssetController = (function () {
 const UIController = (function () {
     const UIselectors = {
         assetList: "#asset-list",
-        assetSum: "#sumOfTarget"
+        assetSum: "#sumOfTarget",
+        assetRemain: "#cashRemain",
+        totalSaved: "#totalSaved"
+
     }
 
 
@@ -107,6 +122,15 @@ const UIController = (function () {
 
         changeAssetTotal: function (totalAssets) {
             document.querySelector(UIselectors.assetSum).textContent = totalAssets;
+        },
+
+        changeRemainValue: function (remains) {
+            document.querySelector(UIselectors.assetRemain).textContent = remains;
+        },
+
+        updateTotalSaved: function (total) {
+            document.querySelector(UIselectors.totalSaved).textContent = total;
+
         }
 
     }
@@ -129,6 +153,16 @@ const AppController = (function (AssetController, UIController) {
             //show total of all assets
             const assetTotal = AssetController.getAssetSum();
             UIController.changeAssetTotal(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(assetTotal));
+
+            // remain
+            const remainCash = AssetController.displayRemains();
+            UIController.changeRemainValue(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(remainCash));
+
+            // totalSave
+            const totalSaved = AssetController.getTotalSaves();
+            UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
+
+
 
         }
 
