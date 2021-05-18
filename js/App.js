@@ -15,9 +15,18 @@ const AssetController = (function () {
     // hard-code
     const data = {
         Asset: [
-            { id: 1, title: 'Car Saves', description: "save for car", totalGoal: 4000, obj: { saveId: 1, price: 1000, timeStamp: nowDate } },
-            { id: 2, title: 'Travel', description: "save to go to Germany", totalGoal: 10000, obj: { saveId: 2, price: 1000, timeStamp: nowDate } },
-            { id: 3, title: 'House', description: "save for a house", totalGoal: 50000, obj: { saveId: 3, price: 1000, timeStamp: nowDate } },
+            {
+                id: 1, title: 'Car Saves', description: "save for car", totalGoal: 4000,
+                obj: { saveId: 1, price: 1000, timeStamp: nowDate }
+            },
+            {
+                id: 2, title: 'Travel', description: "save to go to Germany", totalGoal: 10000,
+                obj: { saveId: 2, price: 1000, timeStamp: nowDate }
+            },
+            {
+                id: 3, title: 'House', description: "save for a house", totalGoal: 50000,
+                obj: { saveId: 3, price: 1000, timeStamp: nowDate }
+            },
         ],
 
         totalSaves: 0,
@@ -64,6 +73,33 @@ const AssetController = (function () {
 
             const remains = assetTotal - saves;
             return remains
+        },
+
+        // assets-ID 
+        add_Asset: function (title, description, amount) {
+            // logic here
+            let ID;
+
+            const tempObj = {
+                saveId: 4,
+                price: 2000,
+                timeStamp: Date.now()
+            }
+
+            if (data.Asset.length > 0) {
+                ID = data.Asset[data.Asset.length - 1].id + 1;
+            } else {
+                ID = 0;
+            }
+
+            // convert amount to number
+            amount = parseFloat(amount);
+            newAsset = new Asset(ID, title, description, amount, tempObj);
+
+
+            data.Asset.push(newAsset);
+
+            return newAsset;
         }
 
 
@@ -79,13 +115,22 @@ const UIController = (function () {
         assetList: "#asset-list",
         assetSum: "#sumOfTarget",
         assetRemain: "#cashRemain",
-        totalSaved: "#totalSaved"
+        totalSaved: "#totalSaved",
+        addAsset: "#addAsset",
+        assetName: "#asset-name",
+        assetDesc: "#description-text",
+        assetAmount: "#Invest_Amount",
+        assetDate: "#target-date"
+
 
     }
 
-
     //public methods
     return {
+
+        getSelectors: function () {
+            return UIselectors;
+        },
 
         showAllAssets: function (assets) {
 
@@ -127,6 +172,21 @@ const UIController = (function () {
         updateTotalSaved: function (total) {
             document.querySelector(UIselectors.totalSaved).textContent = total;
 
+        },
+
+        // gets input value
+        getAssetInput: function () {
+            return {
+                name: document.querySelector(UIselectors.assetName).value,
+                description: document.querySelector(UIselectors.assetDesc).value,
+                amount: document.querySelector(UIselectors.assetAmount).value,
+            }
+        },
+
+        clearFields: function () {
+            document.querySelector(UIselectors.assetName).value = "";
+            document.querySelector(UIselectors.assetDesc).value = "";
+            document.querySelector(UIselectors.assetAmount).value = "";
         }
 
     }
@@ -138,6 +198,30 @@ const UIController = (function () {
 // App Controller 
 
 const AppController = (function (AssetController, UIController) {
+
+    const loadEventListeners = function () {
+
+        //assets button
+        const uiSelectors = UIController.getSelectors();
+        document.querySelector(uiSelectors.addAsset).addEventListener('click', addAsset);
+
+    }
+
+    const addAsset = function (e) {
+
+        const assetInputs = UIController.getAssetInput();
+
+        // validation 
+        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "") {
+            AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount);
+            UIController.clearFields();
+
+        } else {
+            alert("Please fill in all the field");
+        }
+
+        e.preventDefault();
+    }
 
     // public method
     return {
@@ -158,6 +242,9 @@ const AppController = (function (AssetController, UIController) {
             const totalSaved = AssetController.getTotalSaves();
             UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
 
+
+            // event loader
+            loadEventListeners();
         }
 
     }
