@@ -16,3 +16,8 @@ p,h2, i, h3{
 .fa {
   font-size: 43px;
 }
+
+/*Asset delete icon*/
+.asset_delete:hover {
+  cursor: pointer;
+}

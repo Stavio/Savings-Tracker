@@ -31,7 +31,8 @@ const AssetController = (function () {
 
         totalSaves: 0,
         totalRemains: 0,
-        sumOfAssets: 0
+        sumOfAssets: 0,
+        currentAsset: null
     }
 
     // public methods
@@ -99,8 +100,9 @@ const AssetController = (function () {
 
             data.Asset.push(newAsset);
 
+
             return newAsset;
-        }
+        },
 
 
 
@@ -120,7 +122,9 @@ const UIController = (function () {
         assetName: "#asset-name",
         assetDesc: "#description-text",
         assetAmount: "#Invest_Amount",
-        assetDate: "#target-date"
+        assetDate: "#target-date",
+        deleteIcon: "#asset_delete"
+
 
 
     }
@@ -138,10 +142,11 @@ const UIController = (function () {
 
             assets.forEach(function (asset) {
                 html += `
-                <div class="col">
+                <div class="col" id="${asset.id}">
                 <div class="card">
                     <div class="card-header">
                         <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                        <span style="font-size:15px;position:absolute;right:13px" class="badge badge-pill badge-danger asset_delete">X</span>
                         <h2 class="card-title">${asset.title}</h2>
                         <p class="card-text"><i>${asset.description}</i></p>
                         <div class="input-group mb-3">
@@ -187,7 +192,7 @@ const UIController = (function () {
             document.querySelector(UIselectors.assetName).value = "";
             document.querySelector(UIselectors.assetDesc).value = "";
             document.querySelector(UIselectors.assetAmount).value = "";
-        }
+        },
 
     }
 
@@ -203,7 +208,11 @@ const AppController = (function (AssetController, UIController) {
 
         //assets button
         const uiSelectors = UIController.getSelectors();
-        document.querySelector(uiSelectors.addAsset).addEventListener('click', addAsset);
+        document.querySelector(uiSelectors.addAsset).addEventListener('submit', addAsset);
+
+        // icon button
+
+        document.querySelector(uiSelectors.assetList).addEventListener('click', removeAsset);
 
     }
 
@@ -223,6 +232,32 @@ const AppController = (function (AssetController, UIController) {
         e.preventDefault();
     }
 
+
+    //delete asset
+    const removeAsset = function (e) {
+
+        if (e.target.classList.contains('asset_delete')) {
+            e.target.parentNode.parentNode.parentNode.remove();
+        }
+        e.preventDefault();
+
+    }
+
+    const showAllCurrency = function () {
+        //show total of all assets
+        const assetTotal = AssetController.getAssetSum();
+        UIController.changeAssetTotal(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(assetTotal));
+
+        // remain
+        const remainCash = AssetController.displayRemains();
+        UIController.changeRemainValue(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(remainCash));
+
+        // totalSave
+        const totalSaved = AssetController.getTotalSaves();
+        UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
+
+    }
+
     // public method
     return {
         init: function () {
@@ -230,18 +265,7 @@ const AppController = (function (AssetController, UIController) {
 
             UIController.showAllAssets(assets);
 
-            //show total of all assets
-            const assetTotal = AssetController.getAssetSum();
-            UIController.changeAssetTotal(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(assetTotal));
-
-            // remain
-            const remainCash = AssetController.displayRemains();
-            UIController.changeRemainValue(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(remainCash));
-
-            // totalSave
-            const totalSaved = AssetController.getTotalSaves();
-            UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
-
+            showAllCurrency();
 
             // event loader
             loadEventListeners();
