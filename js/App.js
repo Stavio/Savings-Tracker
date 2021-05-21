@@ -32,7 +32,6 @@ const AssetController = (function () {
         totalSaves: 0,
         totalRemains: 0,
         sumOfAssets: 0,
-        currentAsset: null
     }
 
     // public methods
@@ -104,8 +103,6 @@ const AssetController = (function () {
             return newAsset;
         },
 
-
-
     }
 
 })();
@@ -142,7 +139,7 @@ const UIController = (function () {
 
             assets.forEach(function (asset) {
                 html += `
-                <div class="col" id="${asset.id}">
+                <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
                 <div class="card">
                     <div class="card-header">
                         <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
@@ -208,38 +205,11 @@ const AppController = (function (AssetController, UIController) {
 
         //assets button
         const uiSelectors = UIController.getSelectors();
-        document.querySelector(uiSelectors.addAsset).addEventListener('submit', addAsset);
+
+        document.querySelector(uiSelectors.addAsset).addEventListener('click', add_Asset);
 
         // icon button
-
         document.querySelector(uiSelectors.assetList).addEventListener('click', removeAsset);
-
-    }
-
-    const addAsset = function (e) {
-
-        const assetInputs = UIController.getAssetInput();
-
-        // validation 
-        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "") {
-            AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount);
-            UIController.clearFields();
-
-        } else {
-            alert("Please fill in all the field");
-        }
-
-        e.preventDefault();
-    }
-
-
-    //delete asset
-    const removeAsset = function (e) {
-
-        if (e.target.classList.contains('asset_delete')) {
-            e.target.parentNode.parentNode.parentNode.remove();
-        }
-        e.preventDefault();
 
     }
 
@@ -257,6 +227,45 @@ const AppController = (function (AssetController, UIController) {
         UIController.updateTotalSaved(new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'Zar' }).format(totalSaved));
 
     }
+
+    const add_Asset = function (e) {
+
+        const assetInputs = UIController.getAssetInput();
+
+        // validation 
+        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "") {
+            AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount);
+
+            const assets = AssetController.getAssets();
+
+            UIController.showAllAssets(assets);
+            showAllCurrency()
+            UIController.clearFields();
+
+        } else {
+            alert("Please fill in all the field");
+        }
+
+        e.preventDefault();
+    }
+
+
+
+
+    //delete asset
+    const removeAsset = function (e) {
+
+        if (e.target.classList.contains('asset_delete')) {
+            e.target.parentNode.parentNode.parentNode.remove();
+        }
+
+        // update the currency at the
+
+
+        e.preventDefault();
+    }
+
+
 
     // public method
     return {

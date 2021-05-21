@@ -21,3 +21,7 @@ p,h2, i, h3{
 .asset_delete:hover {
   cursor: pointer;
 }
+
+.asset-card {
+  margin-bottom: 17px;
+}
