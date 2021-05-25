@@ -4,12 +4,12 @@
   font-size: 20px;
 }
 
-p,h2, i, h3{
+p,h2, i, h3, h4{
   font-family: 'Roboto', sans-serif;
 }
 
 /* Asset cost*/
-#sumOfTarget{
+#sumOfTarget, #cashRemain, #totalSaved{
   font-weight: bold;
 }
 
@@ -25,3 +25,15 @@ p,h2, i, h3{
 .asset-card {
   margin-bottom: 17px;
 }
+
+/*footer*/
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  background-color: #f5f5f5;
+  text-align: center;
+}
+

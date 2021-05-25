@@ -1,3 +1,58 @@
+// LocalStorage
+
+const StorageController = (function () {
+
+    return {
+        storeAsset: function (asset) {
+            let assets = [];
+
+            if (localStorage.getItem('assets') === null) {
+                assets = [];
+                assets.push(asset);
+
+                localStorage.setItem('assets', JSON.stringify(assets));
+            } else {
+                assets = JSON.parse(localStorage.getItem('assets'));
+
+                assets.push(asset);
+
+                localStorage.setItem('assets', JSON.stringify(assets));
+            }
+
+
+        },
+
+        getAssetFromStorage: function () {
+            let assets;
+            if (localStorage.getItem('assets') === null) {
+                assets = [];
+            } else {
+                assets = JSON.parse(localStorage.getItem('assets'));
+
+            }
+            return assets;
+        },
+
+        deleteAssetFromStorage: function (storageId) {
+            let assets = JSON.parse(localStorage.getItem('assets'));
+
+            assets.forEach(function (asset, index) {
+                if (storageId == asset.id) {
+                    assets.splice(index, 1);
+                }
+
+                localStorage.setItem('assets', JSON.stringify(assets));
+            });
+
+
+        }
+    }
+
+
+})();
+
+
+
 // Asset -- Controller
 const AssetController = (function () {
 
@@ -14,24 +69,14 @@ const AssetController = (function () {
     //data structure / state
     // hard-code
     const data = {
-        Asset: [
-            {
-                id: 1, title: 'Car Saves', description: "save for car", totalGoal: 4000,
-                obj: { saveId: 1, price: 1000, timeStamp: nowDate }
-            },
-            {
-                id: 2, title: 'Travel', description: "save to go to Germany", totalGoal: 10000,
-                obj: { saveId: 2, price: 1000, timeStamp: nowDate }
-            },
-            {
-                id: 3, title: 'House', description: "save for a house", totalGoal: 50000,
-                obj: { saveId: 3, price: 1000, timeStamp: nowDate }
-            },
-        ],
-
+        Asset: StorageController.getAssetFromStorage(),
         totalSaves: 0,
         totalRemains: 0,
         sumOfAssets: 0,
+        savesPrices: {
+            savesId: 1,
+            price: 0
+        }
     }
 
     // public methods
@@ -44,6 +89,9 @@ const AssetController = (function () {
             return data;
         },
 
+        getAssetDeposit: function () {
+            return data.savesPrices;
+        },
 
         getTotalSaves: function () {
             let total = 0;
@@ -80,11 +128,7 @@ const AssetController = (function () {
             // logic here
             let ID;
 
-            const tempObj = {
-                saveId: 4,
-                price: 2000,
-                timeStamp: Date.now()
-            }
+            const tempObj = AssetController.getAssetDeposit();
 
             if (data.Asset.length > 0) {
                 ID = data.Asset[data.Asset.length - 1].id + 1;
@@ -99,9 +143,11 @@ const AssetController = (function () {
 
             data.Asset.push(newAsset);
 
+            StorageController.storeAsset(newAsset);
 
             return newAsset;
         },
+
 
     }
 
@@ -122,8 +168,6 @@ const UIController = (function () {
         assetDate: "#target-date",
         deleteIcon: "#asset_delete"
 
-
-
     }
 
     //public methods
@@ -136,7 +180,6 @@ const UIController = (function () {
         showAllAssets: function (assets) {
 
             let html = '';
-
             assets.forEach(function (asset) {
                 html += `
                 <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
@@ -199,7 +242,7 @@ const UIController = (function () {
 
 // App Controller 
 
-const AppController = (function (AssetController, UIController) {
+const AppController = (function (AssetController, StorageController, UIController) {
 
     const loadEventListeners = function () {
 
@@ -239,7 +282,7 @@ const AppController = (function (AssetController, UIController) {
             const assets = AssetController.getAssets();
 
             UIController.showAllAssets(assets);
-            showAllCurrency()
+            showAllCurrency();
             UIController.clearFields();
 
         } else {
@@ -255,15 +298,23 @@ const AppController = (function (AssetController, UIController) {
     //delete asset
     const removeAsset = function (e) {
 
+        const assets = JSON.parse(localStorage.getItem('assets'));
+        const currentId = e.target.parentElement.parentElement.parentElement.id;
+
         if (e.target.classList.contains('asset_delete')) {
-            e.target.parentNode.parentNode.parentNode.remove();
+            assets.forEach(function (item) {
+                if (item.id == currentId) {
+                    StorageController.deleteAssetFromStorage(currentId);
+                }
+            })
+
+
         }
-
-        // update the currency at the
-
-
         e.preventDefault();
+        location.reload()
+
     }
+
 
 
 
@@ -274,15 +325,21 @@ const AppController = (function (AssetController, UIController) {
 
             UIController.showAllAssets(assets);
 
+            //show currency
             showAllCurrency();
+
+            // footer date
+            let date = new Date();
+            document.querySelector("#Date").innerHTML = date.getFullYear();
 
             // event loader
             loadEventListeners();
+
         }
 
     }
 
 
-})(AssetController, UIController);
+})(AssetController, StorageController, UIController);
 
 AppController.init();
