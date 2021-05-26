@@ -74,8 +74,7 @@ const AssetController = (function () {
         totalRemains: 0,
         sumOfAssets: 0,
         savesPrices: {
-            savesId: 1,
-            price: 0
+            amount: 0
         }
     }
 
@@ -96,7 +95,7 @@ const AssetController = (function () {
         getTotalSaves: function () {
             let total = 0;
             data.Asset.forEach(function (asset) {
-                total += asset.obj.price;
+                total += asset.obj.amount;
             })
 
             data.totalSaves = total;
@@ -166,7 +165,11 @@ const UIController = (function () {
         assetDesc: "#description-text",
         assetAmount: "#Invest_Amount",
         assetDate: "#target-date",
-        deleteIcon: "#asset_delete"
+        deleteIcon: "#asset_delete",
+        depositBtn: "#depositAssetItem",
+        depositAmount: "#depositAmount",
+        assetType: "#assetType",
+        depositDate: "#depositDate"
 
     }
 
@@ -194,7 +197,7 @@ const UIController = (function () {
                     </div>
                     <div class="card-body">
                         <ul>
-                            <li>R${asset.obj.price}</li>
+                            <li>R${asset.obj.amount}</li>
                         </ul>
                     </div>
                 </div>
@@ -204,6 +207,20 @@ const UIController = (function () {
             });
 
             document.querySelector(UIselectors.assetList).innerHTML = html;
+        },
+
+        //get all the ids of the assets
+        // display into selected option element
+
+        showAssetById: function (assets) {
+            let html = '';
+            assets.forEach(function (asset) {
+                html += `
+                <option value="${asset.id}">${asset.title}</option>
+                `;
+            });
+
+            document.querySelector(UIselectors.assetType).innerHTML = html;
         },
 
         changeAssetTotal: function (totalAssets) {
@@ -225,6 +242,17 @@ const UIController = (function () {
                 name: document.querySelector(UIselectors.assetName).value,
                 description: document.querySelector(UIselectors.assetDesc).value,
                 amount: document.querySelector(UIselectors.assetAmount).value,
+            }
+        },
+        getAssetItemInput: function () {
+
+            let assetType = document.querySelector(UIselectors.assetType);
+            let optionValue = assetType.options[assetType.selectedIndex].text;
+
+            return {
+                amount: document.querySelector(UIselectors.depositAmount).value,
+                asset_type: optionValue,
+                depositDate: document.querySelector(UIselectors.depositDate).value
             }
         },
 
@@ -253,6 +281,9 @@ const AppController = (function (AssetController, StorageController, UIControlle
 
         // icon button
         document.querySelector(uiSelectors.assetList).addEventListener('click', removeAsset);
+
+        // deposit button
+        document.querySelector(uiSelectors.depositBtn).addEventListener('click', addAssetItem);
 
     }
 
@@ -285,6 +316,8 @@ const AppController = (function (AssetController, StorageController, UIControlle
             showAllCurrency();
             UIController.clearFields();
 
+            location.reload();
+
         } else {
             alert("Please fill in all the field");
         }
@@ -293,6 +326,22 @@ const AppController = (function (AssetController, StorageController, UIControlle
     }
 
 
+    //adding items of amount to asset object
+    const addAssetItem = function (e) {
+
+        const inputValues = UIController.getAssetItemInput();
+        const assets = AssetController.getAssets();
+
+
+        if (inputValues.amount === "" || inputValues.asset_type === "" || inputValues.depositDate === "") {
+            alert("Please fill in all the fields✍️ ");
+        } else {
+
+        }
+
+
+        e.preventDefault();
+    }
 
 
     //delete asset
@@ -324,6 +373,7 @@ const AppController = (function (AssetController, StorageController, UIControlle
             const assets = AssetController.getAssets();
 
             UIController.showAllAssets(assets);
+            UIController.showAssetById(assets);
 
             //show currency
             showAllCurrency();
