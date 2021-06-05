@@ -73,9 +73,8 @@ const AssetController = (function () {
         totalSaves: 0,
         totalRemains: 0,
         sumOfAssets: 0,
-        savesPrices: {
-            amount: 0
-        }
+        savesPrices: []
+
     }
 
     // public methods
@@ -83,6 +82,7 @@ const AssetController = (function () {
         getAssets: function () {
             return data.Asset;
         },
+
 
         logData: function () {
             return data;
@@ -94,22 +94,32 @@ const AssetController = (function () {
 
         getTotalSaves: function () {
             let total = 0;
-            data.Asset.forEach(function (asset) {
-                total += asset.obj.amount;
-            })
+            const getAssets = this.getAssets();
+            if (getAssets != null) {
+                getAssets.forEach(function (asset) {
+                    total += asset.obj;
+                })
 
-            data.totalSaves = total;
+                data.totalSaves = total;
+            }
+
             return data.totalSaves;
         },
 
         // sum of all the assets
         getAssetSum: function () {
             let total = 0;
-            data.Asset.forEach(function (asset) {
-                total += asset.totalGoal;
-            })
+            const getAssets = this.getAssets();
 
-            data.sumOfAssets = total;
+            if (getAssets != null) {
+                getAssets.forEach(function (asset) {
+                    total += asset.totalGoal;
+                })
+
+                data.sumOfAssets = total;
+            }
+
+
             return data.sumOfAssets;
         },
 
@@ -126,26 +136,48 @@ const AssetController = (function () {
         add_Asset: function (title, description, amount) {
             // logic here
             let ID;
+            const itemStore = AssetController.getAssetDeposit();
+            const assetData = AssetController.getAssets();
 
-            const tempObj = AssetController.getAssetDeposit();
 
-            if (data.Asset.length > 0) {
-                ID = data.Asset[data.Asset.length - 1].id + 1;
+            if (assetData !== null && assetData.length > 0) {
+                ID = assetData[assetData.length - 1].id + 1;
             } else {
                 ID = 0;
             }
 
             // convert amount to number
             amount = parseFloat(amount);
-            newAsset = new Asset(ID, title, description, amount, tempObj);
+            newAsset = new Asset(ID, title, description, amount, itemStore);
 
+            if (assetData !== null) {
+                assetData.push(newAsset);
+                StorageController.storeAsset(newAsset);
+            }
 
-            data.Asset.push(newAsset);
-
-            StorageController.storeAsset(newAsset);
 
             return newAsset;
         },
+
+        //push amount into assets saves-price object based on id selected
+        depositAmountById: function (assetId, assetItem) {
+            const assetData = this.getAssets();
+
+            assetData.forEach(function (item) {
+                if (item.id == assetId) {
+                    item.obj.push(assetItem);
+                    console.log(item)
+                    StorageController.storeAsset(item);
+                }
+
+
+
+            })
+
+
+
+        },
+
 
 
     }
@@ -183,28 +215,59 @@ const UIController = (function () {
         showAllAssets: function (assets) {
 
             let html = '';
-            assets.forEach(function (asset) {
-                html += `
-                <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
-                        <span style="font-size:15px;position:absolute;right:13px" class="badge badge-pill badge-danger asset_delete">X</span>
-                        <h2 class="card-title">${asset.title}</h2>
-                        <p class="card-text"><i>${asset.description}</i></p>
-                        <div class="input-group mb-3">
+            if (assets != null) {
+
+                assets.forEach(function (asset) {
+
+                    if (asset.savesPrices === null) {
+                        html += `
+                    <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                            <span style="font-size:15px;position:absolute;right:13px" class="badge badge-pill badge-danger asset_delete">X</span>
+                            <h2 class="card-title">${asset.title}</h2>
+                            <p class="card-text"><i>${asset.description}</i></p>
+                            <div class="input-group mb-3">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <li>R${asset.obj}</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <ul>
-                            <li>R${asset.obj.amount}</li>
-                        </ul>
+                </div>
+                </div> 
+                    `
+                    } else {
+                        html += `
+                    <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                            <span style="font-size:15px;position:absolute;right:13px" class="badge badge-pill badge-danger asset_delete">X</span>
+                            <h2 class="card-title">${asset.title}</h2>
+                            <p class="card-text"><i>${asset.description}</i></p>
+                            <div class="input-group mb-3">
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <ul>
+                                <p>Empty 😔</p>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-            </div>
-            </div> 
-                `
-            });
+                </div> 
+                    `
+                    }
+
+                });
+            } else {
+                console.log("nothing occurred in the asset")
+            }
+
 
             document.querySelector(UIselectors.assetList).innerHTML = html;
         },
@@ -214,13 +277,19 @@ const UIController = (function () {
 
         showAssetById: function (assets) {
             let html = '';
-            assets.forEach(function (asset) {
-                html += `
-                <option value="${asset.id}">${asset.title}</option>
-                `;
-            });
 
-            document.querySelector(UIselectors.assetType).innerHTML = html;
+            if (assets !== null) {
+                assets.forEach(function (asset) {
+                    html += `
+                    <option value="${asset.id}">${asset.title}</option>
+                    `;
+                });
+
+                document.querySelector(UIselectors.assetType).innerHTML = html;
+            }
+
+
+
         },
 
         changeAssetTotal: function (totalAssets) {
@@ -260,6 +329,12 @@ const UIController = (function () {
             document.querySelector(UIselectors.assetName).value = "";
             document.querySelector(UIselectors.assetDesc).value = "";
             document.querySelector(UIselectors.assetAmount).value = "";
+        },
+
+        depositClearFields: function () {
+            document.querySelector(UIselectors.depositAmount).value = "";
+            document.querySelector(UIselectors.assetType).value = "";
+            document.querySelector(UIselectors.depositDate).value = "";
         },
 
     }
@@ -330,13 +405,19 @@ const AppController = (function (AssetController, StorageController, UIControlle
     const addAssetItem = function (e) {
 
         const inputValues = UIController.getAssetItemInput();
-        const assets = AssetController.getAssets();
 
 
-        if (inputValues.amount === "" || inputValues.asset_type === "" || inputValues.depositDate === "") {
-            alert("Please fill in all the fields✍️ ");
+        let assetType = document.querySelector("#assetType");
+        let optionValue = assetType.options[assetType.selectedIndex].value;
+
+        let depositId = parseInt(optionValue);
+
+        if (inputValues.amount != "" || inputValues.asset_type != "" || inputValues.depositDate != "") {
+            AssetController.depositAmountById(depositId, inputValues.amount);
+            alert("successfully added");
+            UIController.depositClearFields();
         } else {
-
+            alert("Please fill in all the fields✍️ ");
         }
 
 
@@ -363,8 +444,6 @@ const AppController = (function (AssetController, StorageController, UIControlle
         location.reload()
 
     }
-
-
 
 
     // public method
