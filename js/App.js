@@ -70,10 +70,10 @@ const AssetController = (function () {
     // hard-code
     const data = {
         Asset: StorageController.getAssetFromStorage(),
+        currentAsset: null,
         totalSaves: 0,
         totalRemains: 0,
         sumOfAssets: 0,
-        savesPrices: []
 
     }
 
@@ -82,14 +82,30 @@ const AssetController = (function () {
         getAssets: function () {
             return data.Asset;
         },
+        setCurrentItem: function (item) {
+            data.currentAsset = item;
+        },
+        getCurrentAsset: function () {
+            return data.currentAsset;
+        },
+        getAssetById: function (id) {
+            let assets = this.getAssets();
+            found = null;
+            assets.forEach(function (asset) {
+                if (asset.id === id) {
+                    found = asset;
+                }
+            });
 
+            return found;
+        },
 
         logData: function () {
             return data;
         },
 
         getAssetDeposit: function () {
-            return data.savesPrices;
+            return data.Asset.obj;
         },
 
         getTotalSaves: function () {
@@ -160,21 +176,19 @@ const AssetController = (function () {
         },
 
         //push amount into assets saves-price object based on id selected
-        depositAmountById: function (assetId, assetItem) {
-            const assetData = this.getAssets();
+        depositAmountById: function (amount) {
+            assetData = this.getAssets();
+            depositedAmount = parseInt(amount);
+            found = null;
 
             assetData.forEach(function (item) {
-                if (item.id == assetId) {
-                    item.obj.push(assetItem);
-                    console.log(item)
-                    StorageController.storeAsset(item);
+                if (item.id === data.currentAsset.id) {
+                    item.obj = depositAmount;
+                    found = item;
                 }
+            });
 
-
-
-            })
-
-
+            return found;
 
         },
 
@@ -201,7 +215,8 @@ const UIController = (function () {
         depositBtn: "#depositAssetItem",
         depositAmount: "#depositAmount",
         assetType: "#assetType",
-        depositDate: "#depositDate"
+        depositDate: "#depositDate",
+        depositList: '.amount-deposited'
 
     }
 
@@ -219,7 +234,7 @@ const UIController = (function () {
 
                 assets.forEach(function (asset) {
 
-                    if (asset.savesPrices === null) {
+                    if (asset.obj === null) {
                         html += `
                     <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
                     <div class="card">
@@ -232,9 +247,10 @@ const UIController = (function () {
                             </div>
                         </div>
                         <div class="card-body">
-                            <ul>
-                                <li>R${asset.obj}</li>
-                            </ul>
+                        <h4>Deposit List</h4>
+                        <ul class="amount-deposited" data-set="${asset.id}">
+                              
+                        </ul>
                         </div>
                     </div>
                 </div>
@@ -253,8 +269,9 @@ const UIController = (function () {
                             </div>
                         </div>
                         <div class="card-body">
-                            <ul>
-                                <p>Empty 😔</p>
+                        <h4>Deposit List</h4>
+                        <ul class="amount-deposited" data-set="${asset.id}">
+                                
                             </ul>
                         </div>
                     </div>
@@ -290,6 +307,12 @@ const UIController = (function () {
 
 
 
+        },
+
+        //populate the price into the container
+        //by creating li
+        updateAssetItem: function (asset) {
+            StorageController.storeAsset(asset);
         },
 
         changeAssetTotal: function (totalAssets) {
@@ -405,16 +428,23 @@ const AppController = (function (AssetController, StorageController, UIControlle
     const addAssetItem = function (e) {
 
         const inputValues = UIController.getAssetItemInput();
-
+        // const currentAssetData = AssetController.getCurrentAsset();
 
         let assetType = document.querySelector("#assetType");
         let optionValue = assetType.options[assetType.selectedIndex].value;
 
         let depositId = parseInt(optionValue);
 
+        const assetItem = AssetController.getAssetById(depositId);
+        AssetController.setCurrentItem(assetItem);
+
         if (inputValues.amount != "" || inputValues.asset_type != "" || inputValues.depositDate != "") {
-            AssetController.depositAmountById(depositId, inputValues.amount);
-            alert("successfully added");
+            const updateItemAsset = AssetController.depositAmountById(inputValues.amount);
+            console.log(updateItemAsset)
+                ;
+            UIController.updateAssetItem(updateItemAsset);
+            //     // UIController.populateAssetAmount(depositId);
+            //     // alert("successfully added");
             UIController.depositClearFields();
         } else {
             alert("Please fill in all the fields✍️ ");
@@ -453,6 +483,7 @@ const AppController = (function (AssetController, StorageController, UIControlle
 
             UIController.showAllAssets(assets);
             UIController.showAssetById(assets);
+
 
             //show currency
             showAllCurrency();
