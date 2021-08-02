@@ -22,6 +22,11 @@ p,h2, i, h3, h4{
   cursor: pointer;
 }
 
+/* complete button*/
+.complete_btn:hover{
+  cursor: pointer;
+} 
+
 .asset-card {
   margin-bottom: 17px;
 }

@@ -18,7 +18,7 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-2">
+            <div class="">
                 <div class="d-flex flex-column p-3 bg-light" style="width: 160px;">
                     <a href="/"
                         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
@@ -31,11 +31,11 @@
                         Asset</button>
                     <br>
 
-                    <button class="btn btn-info" id="assetDeposit" data-toggle="modal"
-                        data-target="#depositModal">Deposit</button>
+                    <button class="btn btn-info" id="assetDeposit">Clear
+                        Assets</button>
                 </div>
             </div>
-            <div class="col">
+            <div class="col col-xs-6">
                 <div class="jumbotron-fluid bg-light p-4">
                     <div class="row">
                         <div class="col bg-white col-xs-6">
@@ -44,24 +44,12 @@
                             <i class="fa fa-money-bill"></i>
                         </div>
 
-                        <div class="col col-xs-6">
-                            <div class="card" style="width: 18rem;">
-                                <div class="card-body">
-                                    <h4 class="card-title" id="cashRemain">-R00.00</h4>
-                                    <h6 class="card-subtitle mb-2 text-muted">Total remains</h6>
-                                    <p class="card-text">It's not whether you're right or wrong that's important, but
-                                        how
-                                        much money you make when you're right - by Jones.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
 
                         <div class="col col-xs-6">
-                            <div class="card" style="width: 18rem;">
+                            <div class="card" style="width: 30rem;">
                                 <div class="card-body">
-                                    <h4 class="card-title" id="totalSaved">+R00.00</h4>
-                                    <h6 class="card-subtitle mb-2 text-muted">Total saved</h6>
+                                    <h4 class="card-title" id="totalSaved"></h4>
+                                    <h6 class="card-subtitle mb-2 text-muted">Number Of Assets </h6>
                                     <p class="card-text">With a good perspective on history, we can have a better
                                         understanding of the past and present, and thus a clear vision of the future</p>
                                 </div>
@@ -114,48 +102,6 @@
             </div>
         </div>
     </div>
-
-
-    <!-- deposit modal-->
-
-    <div class="modal fade" id="depositModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Deposit Into Asset</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <label for="price-text" class="col-form-label">Deposit amount:</label>
-                            <input type="number" class="form-control" min="0" id="depositAmount">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="price-text" class="col-form-label">Asset Type:</label>
-                            <select class="custom-select" id="assetType">
-                                <!-- map out the options-->
-
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="Date-of-deposit" class="col-form-label">Date:</label>
-                            <input type="date" class="form-control" id="depositDate">
-                        </div>
-
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info" id="depositAssetItem">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <!--- footer -->
 
