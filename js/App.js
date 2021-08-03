@@ -1,4 +1,5 @@
 
+
 const StorageController = (function () {
 
     return {
@@ -57,11 +58,13 @@ const AssetController = (function () {
 
     const nowDate = new Date();
 
-    const Asset = function (id, title, description, totalGoal, obj) {
+    const Asset = function (id, title, description, totalGoal, targetStartDate, targetEndDate, obj) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.totalGoal = totalGoal;
+        this.targetStartDate = targetStartDate;
+        this.targetEndDate = targetEndDate;
         this.obj = obj;
     }
 
@@ -134,7 +137,7 @@ const AssetController = (function () {
         },
 
         // assets-ID 
-        add_Asset: function (title, description, amount) {
+        add_Asset: function (title, description, amount, startDate, endDate) {
             // logic here
             let ID;
             const itemStore = AssetController.getAssetDeposit();
@@ -149,7 +152,7 @@ const AssetController = (function () {
 
             // convert amount to number
             amount = parseFloat(amount);
-            newAsset = new Asset(ID, title, description, amount, itemStore);
+            newAsset = new Asset(ID, title, description, amount, startDate, endDate, itemStore);
 
             if (assetData !== null) {
                 assetData.push(newAsset);
@@ -188,6 +191,26 @@ const AssetController = (function () {
 
 // UI -- Controller 
 const UIController = (function () {
+
+    ///date picker
+    let today = new Date();
+    let picker = tui.DatePicker.createRangePicker({
+        startpicker: {
+            date: today,
+            input: '#startpicker-input',
+            container: '#startpicker-container'
+        },
+        endpicker: {
+            date: today,
+            input: '#endpicker-input',
+            container: '#endpicker-container'
+        },
+        selectableRanges: [
+            [today, new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())]
+        ]
+    });
+
+
     const UIselectors = {
         assetList: "#asset-list",
         assetSum: "#sumOfTarget",
@@ -231,6 +254,7 @@ const UIController = (function () {
                             <h2 class="card-title">${asset.title.toUpperCase()}</h2>
                             <p class="card-text"><i>${asset.description}</i></p>
                             <div class="input-group mb-3">
+                            
                             </div>
                         </div>
                        
@@ -268,6 +292,8 @@ const UIController = (function () {
                 name: document.querySelector(UIselectors.assetName).value,
                 description: document.querySelector(UIselectors.assetDesc).value,
                 amount: document.querySelector(UIselectors.assetAmount).value,
+                startDate: document.getElementById('startpicker-input').value,
+                endDate: document.getElementById('endpicker-input').value
             }
         },
         getAssetItemInput: function () {
@@ -341,8 +367,8 @@ const AppController = (function (AssetController, StorageController, UIControlle
         const assetInputs = UIController.getAssetInput();
 
         // validation 
-        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "") {
-            AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount);
+        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "" || assetInputs.startDate != "" || assetInputs.endDate != "") {
+            AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount, assetInputs.startDate, assetInputs.endDate);
 
             const assets = AssetController.getAssets();
 

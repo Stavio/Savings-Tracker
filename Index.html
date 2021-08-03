@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
         crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css">
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <title>Savings 💰 - Tracker </title>
 </head>
@@ -92,6 +94,22 @@
                         <div class="form-group">
                             <label for="price-text" class="col-form-label">How much to invest:</label>
                             <input type="number" class="form-control" min="0" id="Invest_Amount">
+                        </div>
+
+                        <label for="targetDate" class="col-form-label">Target Dates</label>
+                        <div class="form-group">
+
+                            <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                                <input id="startpicker-input" type="text" aria-label="Date">
+                                <span class="tui-ico-date"></span>
+                                <div id="startpicker-container" style="margin-left: -1px;"></div>
+                            </div>
+                            <span>to</span>
+                            <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+                                <input id="endpicker-input" type="text" aria-label="Date">
+                                <span class="tui-ico-date"></span>
+                                <div id="endpicker-container" style="margin-left: -1px;"></div>
+                            </div>
                         </div>
 
                     </form>

@@ -42,3 +42,7 @@ p,h2, i, h3, h4{
   text-align: center;
 }
 
+/*Date picker*/
+.tui-datetime-input {
+  width: 47%;
+}
