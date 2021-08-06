@@ -69,14 +69,12 @@ const AssetController = (function () {
     }
 
     //data structure / state
-    // hard-code
     const data = {
         Asset: StorageController.getAssetFromStorage(),
         totalSaves: 0,
         totalRemains: 0,
         sumOfAssets: 0,
-        savesPrices: [],
-        assetStatus: false
+        savesPrices: []
 
     }
 
@@ -175,7 +173,6 @@ const AssetController = (function () {
                 }
 
 
-
             })
 
 
@@ -254,8 +251,8 @@ const UIController = (function () {
                             <h2 class="card-title">${asset.title.toUpperCase()}</h2>
                             <p class="card-text"><i>${asset.description}</i></p>
                             <div class="input-group mb-3">
-                            
-                            </div>
+                                <span class="badge badge-success " style="font-size: 1rem">${asset.targetStartDate}</span>  <i class="fas fa-arrow-right"></i> <span class="badge badge-success" style="font-size: 1rem">${asset.targetEndDate}</span>
+                            </div> 
                         </div>
                        
                     </div>
@@ -340,11 +337,6 @@ const AppController = (function (AssetController, StorageController, UIControlle
         // icon button
         document.querySelector(uiSelectors.assetList).addEventListener('click', removeAsset);
 
-        //asset status button
-        let status = document.querySelector(uiSelectors.assetStatus);
-        if (status) {
-            status.addEventListener('click', assetStatus);
-        }
 
         // clear asset inventory 
         document.querySelector(uiSelectors.depositBtn).addEventListener('click', clearAssets);
@@ -367,7 +359,7 @@ const AppController = (function (AssetController, StorageController, UIControlle
         const assetInputs = UIController.getAssetInput();
 
         // validation 
-        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "" || assetInputs.startDate != "" || assetInputs.endDate != "") {
+        if (assetInputs.name != "" || assetInputs.description != "" || assetInputs.amount != "") {
             AssetController.add_Asset(assetInputs.name, assetInputs.description, assetInputs.amount, assetInputs.startDate, assetInputs.endDate);
 
             const assets = AssetController.getAssets();
