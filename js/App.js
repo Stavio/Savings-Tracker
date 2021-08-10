@@ -45,6 +45,20 @@ const StorageController = (function () {
             });
 
 
+        },
+
+        updateAsset: function (id) {
+            let data = window.localStorage.getItem('assets');
+            if (data != null) {
+                let goalAsset = JSON.parse(data);
+                if (goalAsset[id].goalStatus) {
+                    goalAsset[id].goalStatus = false;
+                } else {
+                    goalAsset[id].goalStatus = true;
+                }
+                window.localStorage.setItem('assets', JSON.stringify(goalAsset));
+
+            }
         }
     }
 
@@ -58,13 +72,14 @@ const AssetController = (function () {
 
     const nowDate = new Date();
 
-    const Asset = function (id, title, description, totalGoal, targetStartDate, targetEndDate, obj) {
+    const Asset = function (id, title, description, totalGoal, targetStartDate, targetEndDate, goalStatus, obj) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.totalGoal = totalGoal;
         this.targetStartDate = targetStartDate;
         this.targetEndDate = targetEndDate;
+        this.goalStatus = goalStatus;
         this.obj = obj;
     }
 
@@ -140,6 +155,7 @@ const AssetController = (function () {
             let ID;
             const itemStore = AssetController.getAssetDeposit();
             const assetData = AssetController.getAssets();
+            let goalStatus = false;
 
 
             if (assetData !== null && assetData.length > 0) {
@@ -150,7 +166,7 @@ const AssetController = (function () {
 
             // convert amount to number
             amount = parseFloat(amount);
-            newAsset = new Asset(ID, title, description, amount, startDate, endDate, itemStore);
+            newAsset = new Asset(ID, title, description, amount, startDate, endDate, goalStatus, itemStore);
 
             if (assetData !== null) {
                 assetData.push(newAsset);
@@ -223,7 +239,6 @@ const UIController = (function () {
         depositAmount: "#depositAmount",
         assetType: "#assetType",
         depositDate: "#depositDate",
-        assetStatus: "#assetStatus"
 
     }
 
@@ -242,23 +257,50 @@ const UIController = (function () {
                 assets.forEach(function (asset) {
 
                     if (asset.savesPrices !== null) {
-                        html += `
+
+                        if (asset.goalStatus) {
+                            html += `
                     <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
                     <div class="card">
                         <div class="card-header">
+                        
+                            <h2 class="completeBox">Goal Achieved🥳</h2>
                             <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
-                            <span style="font-size:15px;position:absolute;right:13px" class="badge badge-pill badge-danger asset_delete">X</span>
+                            <span style="font-size:15px;position:absolute;right:13px" class="asset_delete">🗑️</span>
+                            <span  class="badge badge-pill badge-default assetStatus" id="assetStatus" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to change status">❌</span>
                             <h2 class="card-title">${asset.title.toUpperCase()}</h2>
                             <p class="card-text"><i>${asset.description}</i></p>
                             <div class="input-group mb-3">
-                                <span class="badge badge-success " style="font-size: 1rem">${asset.targetStartDate}</span>  <i class="fas fa-arrow-right"></i> <span class="badge badge-success" style="font-size: 1rem">${asset.targetEndDate}</span>
+                                <span  style="font-size: 1rem">${asset.targetStartDate}</span>  <i class="fas fa-arrow-right"></i> <span style="font-size: 1rem">${asset.targetEndDate}</span>
                             </div> 
+                            
                         </div>
                        
                     </div>
                 </div>
                 </div> 
                     `
+                        } else {
+                            html += `
+                            <div class="col col-sm-4 col-xs-6 asset-card" id="${asset.id}">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 style="font-size: 1em;" class="badge badge-info">${new Intl.NumberFormat('ZAR', { style: 'currency', currency: 'ZAR' }).format(asset.totalGoal)}</h2>
+                                    <span style="font-size:15px;position:absolute;right:13px" class="asset_delete">🗑️</span>
+                                    <span  class="badge badge-pill badge-default assetStatus" id="assetStatus" data-bs-toggle="tooltip" data-bs-placement="top" title="Click to change status">✔️</span>
+                                    <h2 class="card-title">${asset.title.toUpperCase()}</h2>
+                                    <p class="card-text"><i>${asset.description}</i></p>
+                                    <div class="input-group mb-3">
+                                        <span  style="font-size: 1rem">${asset.targetStartDate}</span>  <i class="fas fa-arrow-right"></i> <span style="font-size: 1rem">${asset.targetEndDate}</span>
+                                    </div> 
+                                </div>
+                               
+                            </div>
+                        </div>
+                        </div> 
+                            `
+                        }
+
                     }
 
                 });
@@ -341,6 +383,9 @@ const AppController = (function (AssetController, StorageController, UIControlle
         // clear asset inventory 
         document.querySelector(uiSelectors.depositBtn).addEventListener('click', clearAssets);
 
+        // change goal status
+        document.querySelector(uiSelectors.assetList).addEventListener('click', statusUpdate);
+
     }
 
     const showAllCurrency = function () {
@@ -408,6 +453,19 @@ const AppController = (function (AssetController, StorageController, UIControlle
         }
         e.preventDefault();
         location.reload()
+
+    }
+
+    // status icon
+    const statusUpdate = function (e) {
+
+        const currentId = e.target.parentElement.parentElement.parentElement.id;
+        if (e.target.classList.contains('assetStatus')) {
+            StorageController.updateAsset(currentId);
+        }
+        e.preventDefault();
+
+
 
     }
 

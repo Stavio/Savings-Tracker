@@ -21,14 +21,28 @@ p,h2, i, h3, h4{
 .asset_delete:hover {
   cursor: pointer;
 }
+.assetStatus{
+  font-size:22px;
+  position:absolute;
+  right:51px;
+  transition:2s;
+  margin: -5px 0px;
+}
+
 
 /* complete button*/
-.complete_btn:hover{
+.assetStatus:hover{
   cursor: pointer;
+  font-size:30px;
+ 
 } 
 
-.asset-card {
-  margin-bottom: 17px;
+.input-group.mb-3 {
+  font-size: 24px;
+}
+
+i.fas.fa-arrow-right {
+  margin: 0 13px;
 }
 
 /*footer*/
@@ -45,4 +59,16 @@ p,h2, i, h3, h4{
 /*Date picker*/
 .tui-datetime-input {
   width: 47%;
+}
+
+/* complete banner*/
+.completeBox {
+  border: 1px solid black;
+    color: white;
+    background: #000;
+    text-align: center;
+    position: absolute;
+    margin: 50px 26px 10px -19px;
+    width: 100%;
+    transition:5s;
 }
